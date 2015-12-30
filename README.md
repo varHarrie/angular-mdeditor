@@ -4,7 +4,7 @@
 ![预览](./preview.png)
 
 ###安装
-> bower install
+> bower install angular-mdeditor
 
 ###使用
 ```javascript
