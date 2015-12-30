@@ -232,6 +232,7 @@ angular.module('harrie.mdeditor', [
 		return converter.makeHtml.bind(converter);
 	})(window.showdown))||function(src){return src;};
 	return function(input){
+		if(!input||typeof input!=='string') return '';
 		return $sce.trustAsHtml(markdown(input)
 			.replace(/(<pre[^>]*><code[^>]*>)(.|\n)*?(<\/code><\/pre>)/g,function(src){
 				var pre=angular.element(src);
