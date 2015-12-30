@@ -1,7 +1,7 @@
 {
   "name": "angular-mdeditor",
   "authors": [
-    "Harrie <outsidero@qq.com>"
+    "Harrie <varharrie@gmail.com>"
   ],
   "description": "a markdown editor base on angular directive.",
   "main": "src/angular-mdeditor.js",
@@ -12,7 +12,7 @@
     "directive"
   ],
   "license": "MIT",
-  "homepage": "www.harrie.space",
+  "homepage": "https://github.com/varHarrie/angular-mdeditor.git",
   "ignore": [
     "**/.*",
     "node_modules",
