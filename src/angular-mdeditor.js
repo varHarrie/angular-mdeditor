@@ -232,15 +232,12 @@ angular.module('harrie.mdeditor', [
 		return converter.makeHtml.bind(converter);
 	})(window.showdown))||function(src){return src;};
 	return function(input){
-		//return $sce.trustAsHtml(converter.makeHtml(input));
 		return $sce.trustAsHtml(markdown(input)
 			.replace(/(<pre[^>]*><code[^>]*>)(.|\n)*?(<\/code><\/pre>)/g,function(src){
-				//console.log(src);
 				var pre=angular.element(src);
 				var code=pre.children().addClass('hljs');
 				code.html(hljsServ.highlightAuto(code.text()).value);
 				return pre[0].outerHTML;
-				//return RegExp.$1+hljsServ.highlightAuto(RegExp.$2).value+RegExp.$3;
 			}));
 	}
 }])
