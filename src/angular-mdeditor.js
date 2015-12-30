@@ -7,15 +7,17 @@
 angular.module('harrie.mdeditor', [
 ])
 .config(function(){
+	/*
 	if(angular.isUndefined(window.CodeMirror)){
 		throw(new Error('Require CodeMirror!'));
 	}
-	/*if(angular.isUndefined(window.showdown)){
+	if(angular.isUndefined(window.showdown)){
 		throw(new Error('Require showdown!'));
 	}
 	if(angular.isUndefined(window.marked)){
 		throw(new Error('Require marked!'));
-	}*/
+	}
+	*/
 	String.prototype.startWith=function(str,doTrim){
 		var s=(typeof doTrim!=='undefined'&&!!doTrim)?this.trim():this;
 		return (typeof str==='string') && s.length>=str.length && s.substr(0,str.length)===str;
@@ -264,6 +266,9 @@ angular.module('harrie.mdeditor', [
 				'</div>'].join(''),
 		replace:true,
 		compile:function(tElm,tAttrs){
+			if(angular.isUndefined(window.CodeMirror)){
+				throw(new Error('Require CodeMirror!'));
+			}
 			var theme=tAttrs.theme||'default';
 			var textarea = tElm.find('textarea');
 			var codemirror = new window.CodeMirror(function(cm_el){
