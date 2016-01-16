@@ -7,17 +7,8 @@
 angular.module('harrie.mdeditor', [
 ])
 .config(function(){
-	/*
-	if(angular.isUndefined(window.CodeMirror)){
-		throw(new Error('Require CodeMirror!'));
-	}
-	if(angular.isUndefined(window.showdown)){
-		throw(new Error('Require showdown!'));
-	}
-	if(angular.isUndefined(window.marked)){
-		throw(new Error('Require marked!'));
-	}
-	*/
+	if(angular.isUndefined(window.marked)){throw(new Error('Require marked!'));}
+	if(angular.isUndefined(window.hljs)){throw(new Error('Require hljs!'));}
 	String.prototype.startWith=function(str,doTrim){
 		var s=(typeof doTrim!=='undefined'&&!!doTrim)?this.trim():this;
 		return (typeof str==='string') && s.length>=str.length && s.substr(0,str.length)===str;
@@ -179,7 +170,7 @@ angular.module('harrie.mdeditor', [
 	}
 })
 .filter('markdown',['$sce','hljsServ',function($sce,hljsServ){
-	var markdown=(window.marked&&(function(marked){
+	var marked=(function(marked){
 		/*marked.setOptions({
 		  renderer: new marked.Renderer(),
 		  gfm: true,
@@ -190,58 +181,17 @@ angular.module('harrie.mdeditor', [
 		  smartLists: true,
 		  smartypants: false
 		});*/
+		marked.setOptions({
+			highlight:function(code){
+				return hljsServ.highlightAuto(code).value;
+			}
+		})
 		return marked;
-	})(window.marked))||(window.showdown&&(function(showdown){
-		var converter=new showdown.Converter({
-			/*
-			![foo](foo.jpg =100x80)     simple, assumes units are in px
-			![bar](bar.jpg =100x*)      sets the height to "auto"
-			![baz](baz.jpg =80%x5em)  Image with width of 80% and height of 5em
-			*/
-			parseImgDimensions:true,
-			/*
-			some text www.google.com
-			===> <p>some text <a href="www.google.com">www.google.com</a>
-			*/
-			simplifiedAutoLink:true,
-			/*
-			some text with__underscores__in middle
-			===> <p>some text with__underscores__in middle</p>
-			*/
-			literalMidWordUnderscores:true,
-			/*
-			~~strikethrough~~
-			===> <del>strikethrough</del>
-			*/
-			strikethrough:true,
-			/*
-			| h1    |    h2   |      h3 |
-			|:------|:-------:|--------:|
-			| 100   | [a][1]  | ![b][2] |
-			| *foo* | **bar** | ~~baz~~ |
-			*/
-			tables:true,
-			/*
-			Enable support for GFM code block style,default:true
-			*/
-			ghCodeBlocks:true,
-			/*
-			- [x] This task is done
-			- [ ] This is still pending
-			*/
-			tasklists:true
-		});
-		return converter.makeHtml.bind(converter);
-	})(window.showdown))||function(src){return src;};
+	})(window.marked);
+	
 	return function(input){
 		if(!input||typeof input!=='string') return '';
-		return $sce.trustAsHtml(markdown(input)
-			.replace(/(<pre[^>]*><code[^>]*>)(.|\n)*?(<\/code><\/pre>)/g,function(src){
-				var pre=angular.element(src);
-				var code=pre.children().addClass('hljs');
-				code.html(hljsServ.highlightAuto(code.text()).value);
-				return pre[0].outerHTML;
-			}));
+		return $sce.trustAsHtml(marked(input));
 	}
 }])
 .directive('mdeditor', ['mdeditorConfig','actions', function(mdeditorConfig,actions){
@@ -266,9 +216,7 @@ angular.module('harrie.mdeditor', [
 				'</div>'].join(''),
 		replace:true,
 		compile:function(tElm,tAttrs){
-			if(angular.isUndefined(window.CodeMirror)){
-				throw(new Error('Require CodeMirror!'));
-			}
+			if(angular.isUndefined(window.CodeMirror)){throw(new Error('Require CodeMirror!'));}
 			var theme=tAttrs.theme||'default';
 			var textarea = tElm.find('textarea');
 			var codemirror = new window.CodeMirror(function(cm_el){
@@ -282,8 +230,7 @@ angular.module('harrie.mdeditor', [
 			},{
 				mode:'gfm',
 				lineWrapping:true,
-				theme:theme,
-				//lineNumbers:true,
+				theme:theme
 			});
 
 			return function postlink($scope, iElm, iAttrs){
