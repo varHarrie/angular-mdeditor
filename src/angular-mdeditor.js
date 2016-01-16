@@ -1,8 +1,9 @@
-/**
+﻿/**
 * harrie.mdeditor Module
 *
 * Description
 * a markdown editor for angular
+* https://github.com/varHarrie/angular-mdeditor
 */
 angular.module('harrie.mdeditor', [
 ])
